@@ -1,0 +1,56 @@
+﻿@model QuizGame.Web.ViewModels.FeedbackViewModel
+
+@{
+    ViewData["Title"] = "Feedback";
+}
+
+<div class="feedback-screen @(Model.IsCorrect ? "correct" : "wrong")">
+
+    <div class="feedback-card">
+
+        <div class="feedback-icon">
+            @(Model.IsCorrect ? "🎉" : "💥")
+        </div>
+
+        <h2>
+            @(Model.IsCorrect ? "Resposta correta!" : "Resposta errada")
+        </h2>
+
+        @if (!Model.IsCorrect)
+        {
+            <p class="feedback-correct-answer">
+                Resposta correta:
+                <strong>@Model.CorrectAnswer</strong>
+            </p>
+        }
+
+        <div class="feedback-score">
+            Pontuação
+            <span>@Model.CurrentScore</span>
+            <small>/ @Model.TotalQuestions</small>
+        </div>
+
+        <p class="feedback-next">
+            Próxima pergunta em <span id="countdown">2</span>...
+        </p>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let timeLeft = 2;
+        const countdownEl = document.getElementById("countdown");
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.innerText = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.href =
+                    '@Url.Action("Question", "Game", new { sessionId = Model.SessionId })';
+            }
+        }, 1000);
+    </script>
+}

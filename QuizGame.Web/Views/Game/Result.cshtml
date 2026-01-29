@@ -1,0 +1,105 @@
+﻿@model QuizGame.Web.Models.GameSession
+
+@{
+    ViewData["Title"] = "Resultado Final";
+}
+
+<div class="result-container">
+
+    <!-- CARD PRINCIPAL -->
+    <div class="result-card">
+
+        <h1 class="result-title">🏁 Resultado Final</h1>
+
+        <div class="result-summary">
+            <div>
+                <span class="label">Jogador</span>
+                <strong>@Model.Player.Name</strong>
+            </div>
+
+            <div>
+                <span class="label">Tema</span>
+                <strong>@Model.Theme.Name</strong>
+            </div>
+
+            <div class="score-highlight">
+                <span class="label">Pontuação</span>
+                <strong>@Model.Score / @Model.Questions.Count</strong>
+            </div>
+        </div>
+
+        <div class="result-message">
+            @ViewBag.ResultMessage
+        </div>
+
+        <div class="result-percent">
+            🎯 Você acertou <strong>@ViewBag.Percent%</strong> das questões
+        </div>
+
+        <div class="result-actions">
+            <a asp-controller="Game"
+               asp-action="Start"
+               asp-route-themeId="@Model.ThemeId"
+               class="btn btn-primary">
+                🔁 Jogar novamente
+            </a>
+
+            <a asp-controller="Ranking"
+               asp-action="Index"
+               asp-route-themeId="@Model.ThemeId"
+               class="btn btn-outline-light">
+                🏆 Ver Ranking
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-secondary">
+                🏠 Início
+            </a>
+        </div>
+    </div>
+
+    <!-- DETALHES DAS QUESTÕES -->
+    <div class="result-details">
+
+        <h2 class="details-title">📋 Detalhes das Questões</h2>
+
+        @foreach (var gq in Model.Questions)
+        {
+            var correctAnswer = gq.Question.AnswerOptions.First(a => a.IsCorrect);
+
+            <div class="question-result">
+
+                <p class="question-text">
+                    @gq.Question.Text
+                </p>
+
+                @* NÃO RESPONDEU *@
+                @if (gq.SelectedAnswerId == null)
+                {
+                    <p class="answer unanswered">
+                        ⏱ Não respondida
+                    </p>
+                }
+                @* RESPONDEU CERTO *@
+                else if (gq.SelectedAnswer.IsCorrect)
+                {
+                    <p class="answer correct">
+                        ✔ Sua resposta: @gq.SelectedAnswer.Text
+                    </p>
+                }
+                @* RESPONDEU ERRADO *@
+                else
+                {
+                    <p class="answer wrong">
+                        ❌ Sua resposta: @gq.SelectedAnswer.Text
+                    </p>
+                }
+
+                <p class="answer correct">
+                    ✔ Resposta correta: @correctAnswer.Text
+                </p>
+            </div>
+        }
+    </div>
+</div>

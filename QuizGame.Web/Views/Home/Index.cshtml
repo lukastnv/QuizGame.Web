@@ -1,0 +1,65 @@
+﻿@model IEnumerable<QuizGame.Web.Models.Theme>
+
+@{
+    ViewData["Title"] = "Quiz Game";
+}
+
+<div class="home-container">
+
+    <div class="intro-card">
+        <p class="intro-title">👋 Olá! Eu sou o Lucas.</p>
+
+        <p class="intro-text">
+            Desenvolvi este Quiz Game para criar uma experiência divertida entre amigos e,
+            ao mesmo tempo, aplicar na prática meus conhecimentos em desenvolvimento de software.
+            Este projeto faz parte do meu portfólio pessoal e está em constante evolução.
+        </p>
+
+        <p class="intro-cta">
+            Desafie-se e divirta-se! 🚀
+        </p>
+    </div>
+
+
+    <h1 class="home-title">🎮 Escolha um Tema</h1>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Nenhum tema cadastrado.</p>
+    }
+    else
+    {
+        <div class="themes-grid">
+            @foreach (var theme in Model)
+            {
+                <a asp-controller="Game"
+                   asp-action="Start"
+                   asp-route-themeId="@theme.Id"
+                   class="theme-card theme-@theme.Name.ToLower().Replace(" ", "")">
+
+                    <div class="theme-icon">
+                        @GetThemeIcon(theme.Name)
+                    </div>
+
+                    <div class="theme-name">
+                        @theme.Name
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    string GetThemeIcon(string theme)
+    {
+        return theme switch
+        {
+            "Futebol" => "⚽",
+            "League of Legends" => "🧙‍♂️",
+            "Counter Strike" => "🔫",
+            _ => "🎮"
+        };
+    }
+}
+

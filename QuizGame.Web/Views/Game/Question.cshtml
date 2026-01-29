@@ -1,0 +1,90 @@
+﻿@model QuizGame.Web.ViewModels.QuestionViewModel
+
+@{
+    ViewData["Title"] = "Pergunta";
+}
+
+<div class="page-transition">
+    <div class="game-hud">
+
+        <!-- TIMER -->
+        <div class="hud-item timer-circle">
+            <svg width="90" height="90">
+                <circle class="bg"
+                        cx="45" cy="45" r="40" />
+                <circle class="progress"
+                        cx="45" cy="45" r="40"
+                        id="timer-circle" />
+            </svg>
+
+            <span id="timer-text">@Model.TimeLimitSeconds</span>
+        </div>
+
+        <!-- SCORE -->
+        <div class="hud-item score-box">
+            <span class="hud-label">Pontuação</span>
+            <span id="score" class="hud-value">@Model.Score</span>
+        </div>
+
+        <!-- PROGRESSO -->
+        <div class="hud-item">
+            <div class="progress-steps">
+                @for (int i = 0; i < Model.TotalQuestions; i++)
+                {
+                    string status;
+
+                    if (Model.Results[i] == null)
+                    {
+                        status = i == Model.Index ? "active" : "future";
+                    }
+                    else if (Model.Results[i] == true)
+                    {
+                        status = "done correct";
+                    }
+                    else
+                    {
+                        status = "done wrong";
+                    }
+
+                    <span class="step @status"></span>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <h3>@Model.QuestionText</h3>
+
+    <form method="post" asp-action="Answer" id="questionForm">
+        <input type="hidden" name="sessionId" value="@Model.SessionId" />
+        <input type="hidden" name="questionId" value="@Model.QuestionId" />
+        <input type="hidden" name="index" value="@Model.Index" />
+
+        @foreach (var answer in Model.Answers)
+        {
+            var inputId = $"answer_{answer.Id}";
+
+            <div class="form-check answer-option">
+                <input class="form-check-input"
+                       type="radio"
+                       id="@inputId"
+                       name="selectedAnswerId"
+                       value="@answer.Id"
+                       data-correct="@answer.IsCorrect" />
+
+                <label class="form-check-label" for="@inputId">
+                    @answer.Text
+                </label>
+            </div>
+        }
+
+        <button type="submit" class="btn btn-primary mt-3">
+            Responder
+        </button>
+    </form>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/game.js" asp-append-version="true"></script>
+}

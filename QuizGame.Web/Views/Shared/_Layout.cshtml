@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - QuizGame.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/game.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/game-theme.css" asp-append-version="true" />
+    <!--<link rel="stylesheet" href="~/QuizGame.Web.styles.css" asp-append-version="true" /> -->
+</head>
+
+<body>
+    <header>
+        <nav class="navbar-game">
+            <div class="nav-left">
+                <a asp-controller="Home" asp-action="Index" class="nav-logo">
+                    🎮 Quiz Game
+                </a>
+                <span class="game-subtitle">
+                    Teste seus conhecimentos
+                </span>
+            </div>
+
+            <div class="nav-center">
+                <div class="neon-line"></div>
+            </div>
+
+            <div class="nav-right">
+                <a asp-controller="Ranking" asp-action="Index" class="nav-link">
+                    🏆 Ranking
+                </a>
+            </div>
+        </nav>
+
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3 page-transition" id="page">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - Quiz Game —
+            <a asp-controller="Home" asp-action="About">Sobre o Projeto</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

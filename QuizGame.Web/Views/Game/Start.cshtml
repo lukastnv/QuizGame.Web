@@ -1,0 +1,107 @@
+﻿@model QuizGame.Web.Models.ViewModels.StartGameViewModel
+
+@{
+    ViewData["Title"] = "Iniciar Quiz";
+}
+
+<div class="start-page">
+    <div class="start-card theme-@Model?.ThemeName?.ToLower().Replace(" ", "")">
+
+        <h1 class="start-title">🎮 Quiz Game</h1>
+        <p class="start-subtitle">Escolha um tema e comece a jogar</p>
+
+        <!-- Seleção de Tema -->
+        <form method="get" asp-action="Start">
+            <div class="mb-3">
+                <label class="form-label">Tema</label>
+                <select name="themeId"
+                        class="form-select"
+                        onchange="this.form.submit()">
+                    <option value="">Selecione um tema</option>
+                    @foreach (var theme in ViewBag.Themes)
+                    {
+                        <option value="@theme.Id"
+                                selected="@(ViewBag.SelectedThemeId == theme.Id)">
+                            @theme.Name
+                        </option>
+                    }
+                </select>
+            </div>
+        </form>
+
+        @if (Model != null)
+        {
+            <hr />
+
+            <h5 class="text-center">Tema: @Model.ThemeName</h5>
+
+            <form asp-action="Start" method="post" class="start-form">
+
+                <input type="hidden" name="themeId" value="@Model.ThemeId" />
+
+                <div class="mb-3">
+                    <label class="form-label">Nickname</label>
+                    <input type="text"
+                           name="playerName"
+                           class="form-control"
+                           required />
+                </div>
+
+                @if (ViewBag.IsFootball == true)
+                {
+                    <div class="difficulty-wrapper">
+                        <input type="hidden" name="difficulty" id="difficultyInput" value="Easy" />
+
+                        <button type="button"
+                                class="difficulty-btn easy active"
+                                onclick="setDifficulty('Easy', this)">
+                            🟢 Fácil
+                        </button>
+
+                        <button type="button"
+                                class="difficulty-btn hard"
+                                onclick="setDifficulty('Hard', this)">
+                            🔥 Difícil
+                        </button>
+                    </div>
+                }
+
+                <button type="submit" class="btn-play" id="startButton">
+                    🚀 Iniciar
+                </button>
+
+            </form>
+        }
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        //BOTÃO DIFICULDADE - FUTEBOL
+        function setDifficulty(value, button) {
+            document.getElementById("difficultyInput").value = value;
+
+            document.querySelectorAll(".difficulty-btn")
+                .forEach(btn => btn.classList.remove("active"));
+
+            button.classList.add("active");
+        }
+
+        //SCALE AND FADE - BOTAO INICIAR
+        document.querySelector(".start-form")?.addEventListener("submit", function () {
+
+        const btn = document.getElementById("startButton");
+        const card = document.querySelector(".start-card");
+        const page = document.getElementById("page");
+
+        // Evita duplo clique
+        btn.disabled = true;
+        btn.innerText = "⏳ Iniciando...";
+
+        // Animações
+        card.classList.add("shrink");
+        page.classList.add("fade-out");
+    });
+    </script>
+}

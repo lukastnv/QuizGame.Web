@@ -1,0 +1,120 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    var themes = ViewBag.Themes as List<QuizGame.Web.Models.Theme>;
+    var difficulties = ViewBag.Difficulties as Array;
+}
+
+<div class="ranking-container">
+
+    <h1 class="ranking-title">
+        🏆 Ranking
+        <span>@ViewBag.Title</span>
+    </h1>
+
+    <!-- FILTROS -->
+    <form method="get" asp-action="Index" class="ranking-filters">
+
+        <!-- Tema -->
+        <select name="themeId" onchange="this.form.submit()">
+            <option value="">Selecione um tema</option>
+            @foreach (var theme in themes)
+            {
+                <option value="@theme.Id"
+                        selected="@(ViewBag.SelectedThemeId == theme.Id)">
+                    @theme.Name
+                </option>
+            }
+        </select>
+
+        <!-- Dificuldade (somente Futebol) -->
+        @if (ViewBag.IsFootball == true)
+        {
+            <select name="difficulty" onchange="this.form.submit()">
+                <option value="">Dificuldade</option>
+                @foreach (var diff in difficulties)
+                {
+                    <option value="@diff"
+                            selected="@(ViewBag.SelectedDifficulty?.ToString() == diff.ToString())">
+                        @diff
+                    </option>
+                }
+            </select>
+        }
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="ranking-table">
+
+            <div class="ranking-header">
+                <span>#</span>
+                <span>Jogador</span>
+
+                @if (ViewBag.IsFootball == true)
+                {
+                    <span>Dificuldade</span>
+                }
+
+                <span>Pontuação</span>
+            </div>
+
+            @{
+                int position = 1;
+            }
+
+            @foreach (var item in Model)
+            {
+                string podiumClass =
+                position == 1 ? "gold" :
+                position == 2 ? "silver" :
+                position == 3 ? "bronze" :
+                "";
+
+                <div class="ranking-row @podiumClass">
+
+                    <span class="position">
+                        @if (position == 1)
+                        {
+                            <text>🥇</text>
+                        }
+                        else if (position == 2)
+                        {
+
+                            <text>🥈</text>
+                        }
+                        else if (position == 3)
+                        {
+
+                            <text>🥉</text>
+                        }
+                        else
+                        {
+
+                            @position
+                        }
+                    </span>
+
+                    <span class="player">@item.PlayerName</span>
+
+                    @if (ViewBag.IsFootball == true)
+                    {
+                        <span class="difficulty">@item.Difficulty</span>
+                    }
+
+                    <span class="score">
+                        @item.Score / @item.TotalQuestions
+                    </span>
+                </div>
+
+                position++;
+            }
+        </div>
+    }
+    else if (ViewBag.SelectedThemeId != null)
+    {
+        <div class="ranking-empty">
+            😕 Nenhum resultado encontrado para este filtro.
+        </div>
+    }
+</div>
